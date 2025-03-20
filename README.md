@@ -24,3 +24,7 @@ uvicorn main:app --reload
 ```
 
 + 실행 후, GraphQL API 테스트: http://127.0.0.1:8000/graphql
+---
+<img width="1673" alt="image" src="https://github.com/user-attachments/assets/1e2c6ccf-b6e4-4271-aa97-c22862072c01" />
+
++ 좌측 explorer에서 확인 가능
