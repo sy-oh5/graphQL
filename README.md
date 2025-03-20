@@ -13,7 +13,7 @@ SQLAlchemy와 SQLite(`demo.db`)를 기반으로 동작하며, **별도의 데이
 - **Python 버전:** `Python 3.11`
 ```bash
 git clone https://github.com/sy-oh5/graphQL.git
-cd movie-project
+cd movie
 python3 -m venv venv
 source venv/bin/activate
 pip install fastapi strawberry-graphql sqlalchemy uvicorn
