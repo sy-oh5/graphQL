@@ -12,7 +12,7 @@ SQLAlchemy와 SQLite(`demo.db`)를 기반으로 동작하며, **별도의 데이
 ### ✅ 1. 프로젝트 클론 & 가상환경 설정
 - **Python 버전:** `Python 3.11`
 ```bash
-git clone https://github.com/your-repo/movie-project.git
+git clone https://github.com/sy-oh5/graphQL.git
 cd movie-project
 python3 -m venv venv
 source venv/bin/activate
