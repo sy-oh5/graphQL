@@ -9,7 +9,7 @@ SQLAlchemy와 SQLite(`demo.db`)를 기반으로 동작하며, **별도의 데이
 
 ## 🛠 실행 방법
 
-### ✅ 1. 프로젝트 클론 & 가상환경 설정
+###  1. 프로젝트 클론 & 가상환경 설정
 - **Python 버전:** `Python 3.11`
 ```bash
 git clone https://github.com/sy-oh5/graphQL.git
@@ -19,7 +19,7 @@ source venv/bin/activate
 pip install fastapi strawberry-graphql sqlalchemy uvicorn
 ```
 
-### ✅ 2. 서버 실행
+###  2. 서버 실행
 ```bash
 uvicorn main:app --reload
 ```

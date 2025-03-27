@@ -31,12 +31,12 @@ class MovieType:
 
 @strawberry.input
 class CastingInput:
-    character_id: Optional[int]  # ✅ 캐릭터 ID가 없을 수도 있음
-    name: Optional[str]  # ✅ 캐릭터 이름 (없으면 새로 추가)
-    sex: GenderEnum  # ✅ 성별 추가
-    birth_year: Optional[int]  # ✅ 출생 연도 추가
-    nationality: Optional[str]  # ✅ 국적 추가
-    role: RoleEnum  # ✅ 역할
+    character_id: Optional[int]  #  캐릭터 ID가 없을 수도 있음
+    name: Optional[str]  #  캐릭터 이름 (없으면 새로 추가)
+    sex: GenderEnum  #  성별 추가
+    birth_year: Optional[int]  #  출생 연도 추가
+    nationality: Optional[str]  #  국적 추가
+    role: RoleEnum  #  역할
     screen_name: Optional[str]  # 극 중 캐릭터 이름 (배우만 해당)
 
 @strawberry.type
@@ -47,13 +47,13 @@ class Query:
         id: Optional[int] = None,
         title: Optional[str] = None,
         year: Optional[int] = None,
-        director: Optional[str] = None,  # ✅ 특정 감독 검색
-        actor: Optional[str] = None  # ✅ 특정 배우 검색
+        director: Optional[str] = None,  #  특정 감독 검색
+        actor: Optional[str] = None  #  특정 배우 검색
     ) -> List[MovieType]:
         db = SessionLocal()
         query = db.query(Movie).options(joinedload(Movie.castings).joinedload(Casting.character))
 
-        # ✅ 동적 필터링 적용
+        #  동적 필터링 적용
         if id is not None:
             query = query.filter(Movie.id == id)
         if title is not None:
@@ -61,14 +61,14 @@ class Query:
         if year is not None:
             query = query.filter(Movie.year == year)
 
-        # ✅ 감독 검색 (Casting에서 role=DIRECTOR)
+        #  감독 검색 (Casting에서 role=DIRECTOR)
         if director is not None:
             query = query.join(Casting).join(Character).filter(
                 Casting.role == RoleEnum.DIRECTOR,
                 Character.name.ilike(f"%{director}%")
             )
 
-        # ✅ 특정 배우 검색 (Casting에서 role≠DIRECTOR)
+        #  특정 배우 검색 (Casting에서 role≠DIRECTOR)
         if actor is not None:
             query = query.join(Casting).join(Character).filter(
                 Casting.role != RoleEnum.DIRECTOR,
@@ -93,7 +93,7 @@ class Query:
                             birth_year=c.character.birth_year,
                             nationality=c.character.nationality,
                         ),
-                        role=RoleEnum[c.role.name],  # ✅ ENUM 변환
+                        role=RoleEnum[c.role.name],  #  ENUM 변환
                         screen_name=c.screen_name
                     ) for c in m.castings
                 ]
@@ -115,19 +115,19 @@ class Mutation:
         db.commit()
         db.refresh(new_movie)
 
-        # ✅ 캐스팅 정보 등록 (캐릭터 자동 추가 기능 포함)
+        #  캐스팅 정보 등록 (캐릭터 자동 추가 기능 포함)
         if castings:
             for casting in castings:
-                # ✅ 캐릭터 ID가 없으면 새로운 캐릭터 추가
+                #  캐릭터 ID가 없으면 새로운 캐릭터 추가
                 if casting.character_id is None:
                     if not casting.name:
                         raise ValueError("Character name cannot be empty.")
 
                     new_character = Character(
                         name=casting.name,
-                        sex=GenderEnum[casting.sex.name],  # ✅ ENUM 변환 (MALE/FEMALE)
-                        birth_year=casting.birth_year,  # ✅ 출생 연도 저장
-                        nationality=casting.nationality  # ✅ 국적 저장
+                        sex=GenderEnum[casting.sex.name],  #  ENUM 변환 (MALE/FEMALE)
+                        birth_year=casting.birth_year,  #  출생 연도 저장
+                        nationality=casting.nationality  #  국적 저장
                     )
                     db.add(new_character)
                     db.commit()
@@ -139,7 +139,7 @@ class Mutation:
                 new_casting = Casting(
                     movie_id=new_movie.id,
                     character_id=character_id,
-                    role=RoleEnum[casting.role.name],  # ✅ ENUM 변환
+                    role=RoleEnum[casting.role.name],  #  ENUM 변환
                     screen_name=casting.screen_name
                 )
                 db.add(new_casting)
@@ -149,7 +149,7 @@ class Mutation:
         db.close()
 
         return MovieType(
-            id=new_movie.id,  # ✅ 올바른 키워드 인자 사용 (`=`)
+            id=new_movie.id,  #  올바른 키워드 인자 사용 (`=`)
             title=new_movie.title,
             year=new_movie.year,
             castings=[]
@@ -174,13 +174,13 @@ class Mutation:
         if not movie:
             raise ValueError(f"Movie with ID {id} not found")
 
-        # ✅ 제목 및 연도 수정
+        #  제목 및 연도 수정
         if title:
             movie.title = title
         if year:
             movie.year = year
 
-        # ✅ 캐스팅 수정 (기존 캐스팅 삭제 후 새로운 캐스팅 추가)
+        #  캐스팅 수정 (기존 캐스팅 삭제 후 새로운 캐스팅 추가)
         if castings:
             db.query(Casting).filter(Casting.movie_id == id).delete()  # 기존 캐스팅 삭제
             for casting in castings:
@@ -241,12 +241,12 @@ class Mutation:
         if not movie:
             raise ValueError(f"Movie with ID {id} not found")
 
-        # ✅ 관련 캐스팅 먼저 삭제
+        #  관련 캐스팅 먼저 삭제
         db.query(Casting).filter(Casting.movie_id == id).delete()
 
-        # ✅ 영화 삭제
+        #  영화 삭제
         db.delete(movie)
         db.commit()
         db.close()
 
-        return True  # ✅ 성공적으로 삭제되었음을 반환
+        return True  #  성공적으로 삭제되었음을 반환

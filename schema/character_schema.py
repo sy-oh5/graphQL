@@ -16,8 +16,8 @@ class CharacterMovieCastingType:
     movie_id: int
     title: str
     year: int
-    screen_name: Optional[str]  # ✅ 극 중 이름 추가
-    role: RoleEnum  # ✅ 역할 (주연, 조연 등) 추가
+    screen_name: Optional[str]  #  극 중 이름 추가
+    role: RoleEnum  #  역할 (주연, 조연 등) 추가
 
 @strawberry.type
 class CharacterType:
@@ -42,12 +42,12 @@ class Query:
         db = SessionLocal()
         query = (
             db.query(Character)
-            .outerjoin(Casting)  # ✅ 캐스팅 테이블과 조인
-            .outerjoin(Movie)  # ✅ 영화 테이블과 조인
-            .options(joinedload(Character.castings).joinedload(Casting.movie))  # ✅ 올바른 관계 로드
+            .outerjoin(Casting)  #  캐스팅 테이블과 조인
+            .outerjoin(Movie)  #  영화 테이블과 조인
+            .options(joinedload(Character.castings).joinedload(Casting.movie))  #  올바른 관계 로드
         )
 
-        # ✅ 동적 필터링 적용
+        #  동적 필터링 적용
         if id is not None:
             query = query.filter(Character.id == id)
         if name is not None:
@@ -66,19 +66,19 @@ class Query:
             CharacterType(
                 id=c.id,
                 name=c.name,
-                sex=GenderEnum[c.sex.name],  # ✅ ENUM 변환
+                sex=GenderEnum[c.sex.name],  #  ENUM 변환
                 birth_year=c.birth_year,
                 nationality=c.nationality,
-                movies=[  # ✅ `c.castings`로 수정 (캐스팅 테이블을 통해 영화 정보 가져오기)
+                movies=[  #  `c.castings`로 수정 (캐스팅 테이블을 통해 영화 정보 가져오기)
                     CharacterMovieCastingType(
                         casting_id=cast.id,
                         movie_id=cast.movie.id,
                         title=cast.movie.title,
                         year=cast.movie.year,
-                        screen_name=cast.screen_name,  # ✅ 극 중 이름 추가
-                        role=RoleEnum[cast.role.name]  # ✅ 역할 추가
+                        screen_name=cast.screen_name,  #  극 중 이름 추가
+                        role=RoleEnum[cast.role.name]  #  역할 추가
                     )
-                    for cast in c.castings  # ✅ `c.castings` 사용
+                    for cast in c.castings  #  `c.castings` 사용
                 ]
             )
             for c in characters
