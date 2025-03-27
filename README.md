@@ -14,8 +14,8 @@ SQLAlchemy와 SQLite(`demo.db`)를 기반으로 동작하며, **별도의 데이
 ```bash
 git clone https://github.com/sy-oh5/graphQL.git
 cd movie
-python -m venv venv
-source venv/bin/activate
+python -m venv venv #가상환경 생성 - 최초 실행시
+source venv/bin/activate #가상환경 실행
 pip install fastapi strawberry-graphql sqlalchemy uvicorn
 ```
 
